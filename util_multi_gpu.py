@@ -1,3 +1,4 @@
+# coding=utf-8
 from keras.layers import concatenate
 from keras.layers.core import Lambda
 from keras.models import Model
@@ -6,6 +7,13 @@ import tensorflow as tf
 
 
 def make_parallel(model, gpu_count):
+    """
+    Разбиввает модель на части, чтобы отдельные компоненты запускались на разных устройствах
+    :param model: Keras модель
+    :param gpu_count: на сколько частей нужно разбить
+    :return: новвая модель с поддержкой множества устройств
+    """
+
     def get_slice(data, idx, parts):
         shape = tf.shape(data)
         if idx < parts - 1:

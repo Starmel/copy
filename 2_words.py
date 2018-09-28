@@ -17,7 +17,6 @@ documents = []
 for msg in messages:
     documents.append(msg[0] + msg[1])
 
-
 word_vector_size = 500
 model = gensim.models.Word2Vec(size=word_vector_size, window=5, min_count=0, workers=8, sample=0.0005, seed=42)
 model.build_vocab(documents)

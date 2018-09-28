@@ -15,7 +15,8 @@ dialog_files_names = os.listdir(config.dialogs_dir)
 if len(dialog_files_names) == 0:
     sys.exit("files not found in " + config.dialogs_dir)
 
-user_name = u"Вячеслав Корниенко"
+"""Имя пользователя, чтобы идентифицировать его в диалогах"""
+user_name = raw_input(u"Your name")
 dialog_users = map(lambda d: d[:d.index(".txt")].decode("utf-8"),
                    [name for name in dialog_files_names if "txt" in name])
 
@@ -31,6 +32,13 @@ class Message:
 
 
 def parse_messages(file_name):
+    """
+    Применяет регулярное выражение для поиска сообщений в указанном файле
+    Args:
+        file_name - файл, который нужно распарсить
+    Returns:
+        Массив с сообщениями
+    """
     dialog_file = codecs.open(config.dialogs_dir + "/" + file_name, encoding="utf8")
     text = dialog_file.read()
     print "parse: ", file_name
@@ -47,6 +55,13 @@ def parse_messages(file_name):
 
 
 def clean_message(message):
+    """
+    очищает текст сообщения от мусорных символов.
+    Args:
+        message - сообщение, которое нужно очистить.
+    Returns:
+        Массив с сообщениями.
+    """
     text = message.text
     text = text.replace(u"ё", u"е")
     text = re.sub(u"[^А-я ]+", u" ", text)
@@ -58,6 +73,13 @@ def clean_message(message):
 
 
 def collapse_messages(msgs):
+    """
+    Сворачивает несколько подряд идущих сообщений от одного человека в одно большое сообщение.
+    Args:
+       msgs - сообщения, которые нужно свернуть.
+    Returns:
+       Массив с сообщениями.
+    """
     indexes_to_remove = []
 
     def process(message, index):
@@ -82,10 +104,27 @@ def collapse_messages(msgs):
 
 
 def filter_messages(msgs):
+    """
+    Возвращает список сообщений, если автор сообщения соотвествует файлу, которым назван файл диалога
+    Args:
+      msgs - сообщения, которые нужно отфильтровать
+    Returns:
+      Массив с сообщениями.
+    """
     return [m for m in msgs if (m.owner in dialog_users or m.owner == user_name)]
 
 
 def messages_to_question_answer(msgs):
+    """
+    Трансофрмирует тексты сообщений в формат пары массива - массив сообщения пользователя (user_name)
+    и массив его собеседника. Эти массивы вклдываются в массив.
+    получается:
+    [[[Привет],[Йо]], [[Как дела?],[Хорошо, а у тебя]], [[],[]]...]
+    Args:
+      msgs - сообщение, которое нужно транфсормировать.
+    Returns:
+      Массив с сообщениями.
+    """
     out = list()
     if len(msgs) > 0:
         my = u""
@@ -108,6 +147,11 @@ def messages_to_question_answer(msgs):
 
 
 def save_messages(data):
+    """
+    Сохраняет данные в файл
+    Args:
+      data - данные, которые нужно сохранить
+    """
     with codecs.open(config.processed_messages_file, 'w+b', encoding='utf-8') as f:
         pickle.dump(data, f)
 

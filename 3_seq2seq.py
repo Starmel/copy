@@ -8,6 +8,7 @@ import time
 import gensim
 from keras.backend.tensorflow_backend import set_session
 from keras.callbacks import TensorBoard
+from keras.utils import plot_model
 
 from config import *
 from seq2seq.models import SimpleSeq2Seq
@@ -54,6 +55,9 @@ model = SimpleSeq2Seq(input_dim=vec_size,
                       depth=2)
 model.compile(loss='mse', optimizer='rmsprop', metrics=['acc'])
 model.summary()
+
+plot_model(model, to_file='model.png')
+
 
 print u"Настройка tensorboard."
 tensorboard = TensorBoard(log_dir='data/generated/tensorboard', histogram_freq=0, write_graph=True, write_images=False)
