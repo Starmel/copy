@@ -1,0 +1,4 @@
+data/shadow
+data/generated
+venv/
+.idea
